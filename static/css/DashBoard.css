@@ -1,0 +1,32 @@
+	.s-move-content-outer{border:0px #ffffff solid;width:200px;height:200px;position:relative;outline:none;user-select:none;/*overflow:hidden;*/;}
+	.s-move-content-outer:focus .s-show{display:block;}
+    /* 移动 */
+    .s-move-content-header{background-color:pink;width:100%;height:30px;text-align:center;line-height:30px;}
+	.s-move-content-header:focus .s-show{display:block;}
+
+
+	/* 八个方位的div控制 */
+	.s-move-content-direction{width:5px;height:5px;border:1px black solid;background-color:gray;position:absolute;display:none;}
+	/* 八个方位的小手各自的div */
+	.s-move-content-direction-n{cursor:n-resize;left:50%;top:-7px;margin-left:-4px;}
+	.s-move-content-direction-ne{cursor:ne-resize;top:-7px;right:-7px;}
+	.s-move-content-direction-e{cursor:e-resize;top:50%;right:-7px;margin-top:-4px;}
+	.s-move-content-direction-se{cursor:se-resize;bottom:-7px;right:-7px;}
+	.s-move-content-direction-s{cursor:s-resize;bottom:-7px;left:50%;margin-left:-4px;}
+	.s-move-content-direction-sw{cursor:sw-resize;left:-7px;bottom:-7px;}
+	.s-move-content-direction-w{cursor:w-resize;left:-7px;top:50%;margin-top:-4px;}
+	.s-move-content-direction-nw{cursor:nw-resize;left:-7px;top:-7px;}
+
+	.delete_data{
+	width:25px;
+	height:25px;
+	text-align: center;
+	background-color: #dc986d;
+	border: 0px none;
+	border-radius: 5px;
+	position:absolute;
+	float:right;
+	top:0px;
+	right:0px;
+	display:block;
+	}

@@ -1,0 +1,843 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>99BI-仪表盘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel='stylesheet' type='text/css'/>
+    <link href="../static/css/style3.css" rel='stylesheet' type='text/css'/>
+    <!-- Custom CSS -->
+
+    <link rel="stylesheet" href="../static/css/morris.css" type="text/css"/>
+    <!-- Graph CSS -->
+    <link href="../static/css/font-awesome.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="../static/js/jquery-2.1.4.min.js"></script>
+    <!-- //jQuery -->
+    <link href='//fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet'
+          type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <!-- lined-icons -->
+    <link rel="stylesheet" href="../static/css/icon-font.min.css" type='text/css'/>
+    <!-- //lined-icons -->
+    <script src="https://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://www.daixiaorui.com/Public/js/jquery.min.js"></script>
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../static/js/DashBoard.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/DashBoard.css">
+    {#    #echarts#}
+    <script type="text/javascript" src="../static/js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="../static/js/html2canvas.js"></script>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/echarts.js') }}"></script>
+    <style type="text/css">
+body,html {margin:0; height:100%;}
+</style>
+</head>
+<body onload="load();">
+<form id="form1" onsubmit="return subit_onclick()" style="margin:0; height:100%;">
+
+        <!--/content-inner-->
+    <div  style="width: 100%;height: 45px;">
+        <input style="display: none" id="data_delete" name="data_delete" value="">
+        <ol class="breadcrumb">
+            <div style="display: inline-block;border: 1px solid #eee7e7;">
+                <li class="breadcrumb-item">
+                    <a style="color: #000000" href="{{ url_for('upload.index') }}"><h4
+                            style="margin-left: 10px;margin-right: 10px;" id="forms-inline">文件上传</h4></a>
+                </li>
+            </div>
+            <div style="display: inline-block;border: 1px solid #eee7e7;">
+
+                <li class="breadcrumb-item"><a style="color: #000000;" href="{{ url_for('handle.data_handle') }}"><h4
+                        style="margin-left: 10px;margin-right: 10px;" id="forms-inline">数据操作</h4></a>
+                </li>
+            </div>
+            <div style="display: inline-block;border: 1px solid #eee7e7;">
+                <li class="breadcrumb-item"><a style="color: #000000" href="{{ url_for('show.show_p') }}"><h4
+                        style="margin-left: 10px;margin-right: 10px;" id="forms-inline">可视化操作</h4></a>
+                </li>
+            </div>
+            <div style="display: inline-block;border: 1px solid #eee7e7;">
+                <li class="breadcrumb-item">
+                    <a style="color: #008DE7"><h4 style="margin-left: 10px;margin-right: 10px;" id="forms-inline">
+                        仪表盘</h4></a>
+                </li>
+            </div>
+
+            <div style="display: inline-block;border: 1px solid #eee7e7;">
+                <li class="breadcrumb-item">
+                    <a style="color: #000000" href="{{ url_for('log.oper_log') }}"><h4 style="margin-left: 10px;margin-right: 10px;" id="forms-inline">
+                        操作日志</h4></a>
+                </li>
+            </div>
+            <input style="display:none" name="YBP_data_value" id="YBP_data_value" value="0">
+                <button id="YBP_data_names" onclick="YBPDEF()" style="" type="button" value="test"
+                        class="btn btn_YBP_data_color"
+                        name="YBPdelect">清空仪表盘数据
+                </button>
+            <input style="display: none" id="rrefresh_data_value" name="rrefresh_data_value" value="">
+
+                <div class="btn btn-default" style="border: 1px solid #d6f5eb;"
+         onclick="doScreenShot()">截取仪表盘图片
+    </div>
+            <div style="float: right;border: 1px solid #eee7e7;">
+                <li class="breadcrumb-item">
+                    <button type="submit" onclick="refresh_data()" class="btn btn-default">刷新图标位置</button>
+                </li>
+            </div>
+        </ol>
+    </div>
+
+        <div id="main" style="height:94%;">
+
+        <div class="left-content">
+            <div class="mother-grid-inner" id="mother-grid-inner" style="display: block">
+                <div>
+                    {% for i in ybp_data %}
+                            {% if i[0]!="5" and i[0]!="7" %}
+                            <div class="s-move-content-outer" id="refresh{{ loop.index }}"
+                                 style="height:{{ (i[-1]).split("|")[1].split(",")[0] }}; width: {{ (i[-1]).split("|")[1].split(",")[1] }}; top: {{ (i[-1]).split("|")[1].split(",")[2] }}; left: {{ (i[-1]).split("|")[1].split(",")[3] }};"
+                                 tabIndex="1">
+                                <div id="del{{ loop.index }}" class="delete_data" style="float: right" onclick="data_del(id)">x</div>
+                                <div id="{{ i[1] }}" class="aa" style="height: 100%;width:95%;"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-n"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-ne"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-e"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-se"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-s"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-sw"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-w"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-nw"></div>
+                            </div>
+                            {% endif %}
+{#                            表格图#}
+                            {% if i[0]=="5" %}
+                                <div class="s-move-content-outer" id="refresh{{ loop.index }}"
+                                 style="height:{{ (i[-1]).split("|")[1].split(",")[0] }}; width: {{ (i[-1]).split("|")[1].split(",")[1] }}; top: {{ (i[-1]).split("|")[1].split(",")[2] }}; left: {{ (i[-1]).split("|")[1].split(",")[3] }};"
+                                 tabIndex="1">
+                                <div id="del{{ loop.index }}" class="delete_data" onclick="data_del(id)">x</div>
+                                <div id="data_show" class="data_show">
+                                    {{ df_tb|safe }}
+                                </div>
+                                <div id="{{ i[1] }}" class="aa" style="height: 100%;width:95%;"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-n"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-ne"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-e"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-se"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-s"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-sw"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-w"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-nw"></div>
+                                </div>
+                            {% endif %}
+
+                            {% if i[0]=="7" %}
+                                <div class="s-move-content-outer" id="refresh{{ loop.index }}"
+                                 style="height:{{ (i[-1]).split("|")[1].split(",")[0] }}; width: {{ (i[-1]).split("|")[1].split(",")[1] }}; top: {{ (i[-1]).split("|")[1].split(",")[2] }}; left: {{ (i[-1]).split("|")[1].split(",")[3] }};"
+                                 tabIndex="1">
+                                <div id="del{{ loop.index }}" class="delete_data" onclick="data_del(id)">x</div>
+                                <div id="data_show" class="data_show">
+                                    <img src="{{ url_for('static', filename='matplotlibpicture/fitting.jpg') }}" style="width: 100% ">
+                                </div>
+                                <div id="{{ i[1] }}" class="aa" style="height: 100%;width:95%;"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-n"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-ne"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-e"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-se"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-s"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-sw"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-w"></div>
+                                <div class="s-move-content-direction s-show s-move-content-direction-nw"></div>
+                                </div>
+                            {% endif %}
+
+
+
+{#                        聚合结果图#}
+                            {% if i[0]=="6" %}
+                                <script type="text/javascript">
+                                    window.onload = function (){
+                                        var bigImg = document.createElement("img");		//创建一个img元素
+                                        bigImg.src="{{ url_for('static', filename=i[1]) }}";   //给img元素的src属性赋值
+                                        bigImg.width="320";  //320个像素 不用加px
+                                        var myDiv = document.getElementById('{{ i[1] }}'); //获得dom对象
+                                        myDiv.appendChild(bigImg);  	//为dom添加子元素img
+                                    };
+                                </script>
+                            {% endif %}
+
+{#                                折线图#}
+                            {% if i[0]=="1" %}
+                                <script type="text/javascript">
+                                    var dom = document.getElementById("{{i[1]}}");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    var option;
+                                    option = {
+                                        legend: {
+                                            x: 'left',
+                                            itemWidth: 1,
+                                            itemHeight: 2,
+                                            orient: 'vertical',
+                                            textStyle: {
+                                                fontSize: 10
+                                            }
+                                        },
+                                        backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                                            offset: 0,
+                                            color: '{{ i[6] }}'
+                                        }, {
+                                            offset: 1,
+                                            color: '#cdd0d5'
+                                        }]),
+                                        toolbox: {
+                                            show: true,
+                                            feature: {
+                                                saveAsImage: {}
+                                            }
+                                        },
+                                        title: {
+                                            text: '{{ i[1]|safe }}',
+                                            x: 'center',
+                                            textStyle: {
+                                                fontSize: 12
+                                            }
+                                        },
+                                        {% if i[2]=="0" %}
+                                            xAxis: {
+                                                type: 'category',
+                                                data: {{ i[3]|safe }}
+                                            },
+                                            yAxis: {
+                                                type: 'value'
+                                            },
+                                        {% elif i[2]=="1" %}
+                                            yAxis: {
+                                                type: 'category',
+                                                data: {{ i[3]|safe }}
+                                            },
+                                            xAxis: {
+                                                type: 'value'
+                                            },
+                                        {% endif %}
+                                        series: [
+                                            {%  for j in (i[4]|replace("[[","[")|replace("]]","]")|replace("'",'')|replace("], [","|")|replace("]","")|replace("[","")).split("|")  %}
+                                                {
+                                                    name: "数据{{ loop.index }}",
+                                                    type: 'line',
+                                                    data: [{{ j }}],
+                                                    lineStyle: {
+                                                        width:{{ i[5] }}
+                                                    },
+                                                    smooth:{{ i[7] }},
+                                                    {% if i[8]=="1" %}
+                                                        areaStyle: {},
+                                                    {% else %}
+                                                    {% endif %}
+                                                },
+                                            {% endfor %}
+                                        ]
+                                    };
+                                    if (option && typeof option === 'object') {
+                                        myChart.setOption(option);
+                                    }
+                                </script>
+
+                            {% endif %}
+                            {#                                柱状图#}
+                            {% if i[0]=="2" %}
+                                <script type="text/javascript">
+                                    var dom = document.getElementById("{{i[1]}}");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    var option;
+                                    option = {
+                                        legend: {
+                                            x: 'left',
+                                            itemWidth: 1,
+                                            itemHeight: 2,
+                                            orient: 'vertical',
+                                            textStyle: {
+                                                fontSize: 10
+                                            }
+                                        },
+                                        backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                                            offset: 0,
+                                            color: '{{i[6]}}'
+                                        }, {
+                                            offset: 1,
+                                            color: '#cdd0d5'
+                                        }]),
+                                        toolbox: {
+                                            show: true,
+                                            feature: {
+                                                saveAsImage: {}
+                                            }
+                                        },
+                                        title: {
+                                            text: '{{ i[1]|safe }}',
+                                            x: 'center',
+                                            textStyle: {
+                                                fontSize: 12
+                                            }
+                                        },
+                                        {% if i[2]=="0" %}
+                                            xAxis: {
+                                                type: 'category',
+                                                data: {{ i[3]|safe }}
+                                            },
+                                            yAxis: {
+                                                type: 'value'
+                                            },
+                                        {% elif i[2]=="1" %}
+                                            yAxis: {
+                                                type: 'category',
+                                                data: {{ i[3]|safe }}
+                                            },
+                                            xAxis: {
+                                                type: 'value'
+                                            },
+                                        {% endif %}
+                                        series: [
+                                            {%  for j in (i[4]|replace("[[","[")|replace("]]","]")|replace("'",'')|replace("], [","|")|replace("]","")|replace("[","")).split("|")  %}
+                                                {
+                                                    name: "数据{{ loop.index }}",
+                                                    type: 'bar',
+                                                    data: [{{ j }}],
+                                                },
+                                            {% endfor %}
+                                        ]
+                                    };
+                                    if (option && typeof option === 'object') {
+                                        myChart.setOption(option);
+                                    }
+                                </script>
+                            {% endif %}
+
+                            {#                                饼图#}
+                            {% if i[0]=="3" %}
+                                <script type="text/javascript">
+                                    var dom = document.getElementById("{{i[1]}}");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    var option;
+                                    var pie_data_x =
+                                    {{ i[2]|safe }}
+                                    var pie_data_y =
+                                    {{ i[3]|safe }}
+                                    var data = []
+                                    for (var i in pie_data_x) {
+                                        data.push({
+                                            name: pie_data_x[i],
+                                            value: pie_data_y[i]
+                                        })
+                                    }
+                                    option = {
+                                        legend: {
+                                            x: 'left',
+                                            itemWidth: 1,
+                                            itemHeight: 2,
+                                            orient: 'vertical',
+                                            textStyle: {
+                                                fontSize: 7
+                                            }
+                                        },
+                                        label: {
+                                            formatter: "{b}\n{c}\n{d}%",
+                                            fontSize: 8
+                                        },
+                                        backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                                            offset: 0,
+                                            color: '{{ i[5] }}'
+                                        }, {
+                                            offset: 1,
+                                            color: '#cdd0d5'
+                                        }]),
+                                        toolbox: {
+                                            show: true,
+                                            feature: {
+                                                saveAsImage: {}
+                                            }
+                                        },
+                                        title: {
+                                            text: '{{ i[1]|safe }}',
+                                            x: 'center',
+                                            textStyle: {
+                                                fontSize: 12
+                                            }
+                                        },
+                                        series: [
+                                            {
+                                                type: 'pie',
+                                                data: data,
+                                                {% if i[4]=="1" %}
+                                                    roseType: "radius"
+                                                {% elif i[4]=="0" %}
+                                                {% endif %}
+                                            },
+                                        ]
+                                    };
+                                    if (option && typeof option === 'object') {
+                                        myChart.setOption(option);
+                                    }
+                                </script>
+                            {% endif %}
+
+                            {#                        散点图#}
+                            {% if i[0]=="4" %}
+                                <script>
+                                    var dom = document.getElementById("{{i[1]}}");
+                                    var myChart = echarts.init(dom);
+                                    var app = {};
+                                    var option;
+                                    var scatter_x =
+                                    {{ i[2]|safe }}
+                                    var scatter_y =
+                                    {{ i[3]|safe }}
+                                    var scatter_data = []
+                                    for (var i in scatter_y) {
+                                        scatter_data.push([
+                                            scatter_x[i], scatter_y[i]
+                                        ])
+                                    }
+                                    option = {
+                                        backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                                            offset: 0,
+                                            color: '{{ i[5] }}'
+                                        }, {
+                                            offset: 1,
+                                            color: '#cdd0d5'
+                                        }]),
+                                        legend: {
+                                            x: 'left',
+                                            itemWidth: 1,
+                                            itemHeight: 2,
+                                            orient: 'vertical',
+                                            textStyle: {
+                                                fontSize: 10
+                                            }
+                                        },
+                                        title: {
+                                            text: "{{ i[1]|safe }}",
+                                            x: 'center',
+                                            textStyle: {
+                                                fontSize: 10
+                                            }
+                                        },
+                                        xAxis: {},
+                                        yAxis: {},
+                                        series: {
+                                            type: 'scatter',
+                                            data: scatter_data
+                                        }
+                                    }
+                                    if (option && typeof option === 'object') {
+                                        myChart.setOption(option);
+                                    }
+                                </script>
+                            {% endif %}
+
+
+                            </div>
+                    {% endfor %}
+
+            </div>
+        </div>
+        </div>
+
+</form>
+</body>
+</html>
+<script type="text/javascript">
+    $("#dw").hide();
+
+    //关闭图片
+    function closeok() {
+        $("#dw").hide();
+    }
+
+    //点击截图
+    function doScreenShot() {
+        $("#dw").show();
+        html2canvas($("#main"), {
+            onrendered: function (canvas) {
+                canvas.id = "mycanvas";
+                var mainwh = $("#main").width();
+                var mainhg = $("#main").height();
+                var img = convertCanvasToImage(canvas);
+                console.log(img);
+                //document.body.appendChild(img);
+                $("#dw").append(img) //添加到展示图片div区域
+                img.onload = function () {
+                    img.onload = null;
+                    canvas = convertImageToCanvas(img, 0, 0, 1400, 1000); //设置图片大小和位置
+                    img.src = convertCanvasToImage(canvas).src;
+                    $(img).css({
+                        background: "#fff"
+                    });
+                    //调用下载方法
+                    if (browserIsIe()) { //假如是ie浏览器
+                        DownLoadReportIMG(img.src);
+                    } else {
+                        download(img.src)
+                    }
+                }
+            }
+        });
+    }
+
+    //绘制显示图片
+    function convertCanvasToImage(canvas) {
+        var image = new Image();
+        image.src = canvas.toDataURL("image/png"); //获得图片地址
+        return image;
+    }
+
+    //生成canvas元素，相当于做了一个装相片的框架
+    function convertImageToCanvas(image, startX, startY, width, height) {
+        var canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, startX, startY, width, height, 20, 20, 960, 600); //在这调整图片中内容的显示（大小,放大缩小,位置等）
+        return canvas;
+    }
+
+    function DownLoadReportIMG(imgPathURL) {
+        //如果隐藏IFRAME不存在，则添加
+        if (!document.getElementById("IframeReportImg"))
+            $('<iframe style="display:none;" id="IframeReportImg" name="IframeReportImg" onload="DoSaveAsIMG();" width="0" height="0" src="about:blank"></iframe>').appendTo("body");
+        if (document.all.IframeReportImg.src != imgPathURL) {
+            //加载图片
+            document.all.IframeReportImg.src = imgPathURL;
+        } else {
+            //图片直接另存为
+            DoSaveAsIMG();
+        }
+    }
+
+    function DoSaveAsIMG() {
+        if (document.all.IframeReportImg.src != "about:blank")
+            window.frames["IframeReportImg"].document.execCommand("SaveAs");
+    }
+
+    // 另存为图片
+    function download(src) {
+        var $a = $("<a></a>").attr("href", src).attr("download", "img.png");
+        $a[0].click();
+    }
+
+    //判断是否为ie浏览器
+    function browserIsIe() {
+        if (!!window.ActiveXObject || "ActiveXObject" in window)
+            return true;
+        else
+            return false;
+    }
+</script>
+
+<script>
+    var YBP_value=0;//仪表盘是否清空
+//仪表盘清空
+function YBPDEF(){
+    if(YBP_value===0){
+        document.getElementById('YBP_data_names').classList.add("btn_YBP_data_name");
+        document.getElementById('YBP_data_names').classList.remove("btn_YBP_data_color");
+        document.getElementById('YBP_data_value').value=1;
+        YBP_value=1;
+    }else{
+        document.getElementById('YBP_data_names').classList.add("btn_YBP_data_color");
+        document.getElementById('YBP_data_names').classList.remove("btn_YBP_data_name");
+        document.getElementById('YBP_data_value').value=0;
+        YBP_value=0;
+    }
+}
+    function data_del(ids) {
+        var true_id=ids.substring(3);
+        var data='refresh'+true_id
+        document.getElementById(data).style.display = "none";
+        document.getElementById('data_delete').value = document.getElementById('data_delete').value+','+data;
+    }
+
+
+    function refresh_data() {
+
+        rege = /^refresh.*/;
+        var domAll = document.all, domArr = [];
+        for (var i = 0; i < domAll.length; i++) {
+            if (rege.test(domAll[i].id))
+                domArr.push(domAll[i].id);
+        }
+        dic = {}
+        for (var j = 0; j < domAll.length; j++) {
+            if (domArr[j] !== undefined) {
+                var ids = domArr[j];
+                var height = document.getElementById(domArr[j]).style.height;
+                var width = document.getElementById(domArr[j]).style.width;
+                var top = document.getElementById(domArr[j]).style.top;
+                var left = document.getElementById(domArr[j]).style.left;
+                dic[ids] = height + ',' + width + ',' + top + ',' + left
+            }
+        }
+        document.getElementById('rrefresh_data_value').value = JSON.stringify(dic);
+    }
+
+
+    //监控页面上所有div点击事件
+    var $BIPanel = $("div[class^='s-move-content-outer']").mousedown(function (e) {
+        var ele = $(this);
+        document.onmousemove = function (e) {
+            addMoveContentControl(ele[0], e);
+        }
+
+    });
+
+    var space = {
+        move: {              // [移动]
+            content: {           // [移动备注框]
+                width: 200,         // 默认div的宽度
+                height: 200,         // 默认div的高度
+                top: 0,          // 默认div的距离头部距离
+                right: 0,          // 默认div的距离右侧距离
+                bottom: 0,          // 默认div的距离底部距离
+                left: 0,          // 默认div的距离左侧距离
+                moveHeight: 30,     // 默认头部高度
+                textareaHeight: 170, // 默认textarea的高度
+                min: 100,        // div宽度高度不能小于min
+                buttomTarget: null,  // 鼠标按下之后的target
+                moveTarget: null     // 鼠标按下之后移动的target
+            }
+        }
+    }
+
+    /**
+     * @para divEle 最大的div
+     * @para e      鼠标事件
+     */
+    function addMoveContentSuper(divEle, e) {
+        // 缩小保护
+        this.min = space.move.content.min;
+
+        // 所有元素
+        this.divEle = divEle;
+        this.textEle = divEle.lastElementChild; // testArea element
+
+        // 最大div的style
+        this.divStyle = this.divEle.style;
+        this.divWidth = this.divStyle.width;
+        this.divHeight = this.divStyle.height;
+        this.divTop = this.divStyle.top;
+        this.divRight = this.divStyle.right;
+        this.divBottom = this.divStyle.bottom;
+        this.divLeft = this.divStyle.left;
+
+        // 头部移动高度
+        this.hreadHeight = space.move.content.moveHeight;
+
+        // textarray的style
+        this.textStyle = this.textEle.style;
+
+        // 鼠标事件event
+        this.e = e;
+        this.x = e.movementX;
+        this.y = e.movementY;
+        this.moveTarget = space.move.content.moveTarget; // 正在移动的target
+
+        // 修改属性的值
+        // [这里以后就不用再if判断了,就连html里的标签都是js生成的直接用js赋值宽度就行]
+        this.divWidth = (this.divWidth === "") ?
+            space.move.content.width : parseInt(this.divWidth.replace("px", ""));
+
+        this.divHeight = (this.divHeight === "") ?
+            space.move.content.height : parseInt(this.divHeight.replace("px", ""));
+
+        this.divTop = (this.divTop === "") ?
+            space.move.content.top : parseInt(this.divTop.replace("px", ""));
+
+        this.divRight = (this.divRight === "") ?
+            space.move.content.right : parseInt(this.divRight.replace("px", ""));
+
+        this.divBottom = (this.divBottom === "") ?
+            space.move.content.bottom : parseInt(this.divBottom.replace("px", ""));
+
+        this.divLeft = (this.divLeft === "") ?
+            space.move.content.left : parseInt(this.divLeft.replace("px", ""));
+
+    }
+
+    /**
+     * 添加移动框的 移动 && 放大 && 缩小 && 斜拉
+     *
+     * 元素组织最大一层 div → 移动层 → 八个小方位
+     *                ↓
+     *               textarea
+     * @param  {[divElement]}  divEle [需要移动的div,最外层的div]
+     * @param  {[EventObject]} e      [event type='move']
+     * @return {[void]}
+     */
+    function addMoveContentControl(divEle, e) {
+        if (e.buttons !== 1) {                               // 当鼠标没有按下则不走方法
+            space.move.content.moveTarget = null;
+            return;
+        } else if (space.move.content.moveTarget === null) {  // 当鼠标按下了,movetarget为空则赋值
+            space.move.content.moveTarget = e.target;        // 这里利用了成员变量
+        }
+        var move = divEle;                                                 // 获取移动元素
+        var direction = divEle.getElementsByClassName("s-move-content-direction");           // 获取所有拉伸的节点
+        switch (space.move.content.moveTarget) {
+            case move         :
+                new addMoveContentMove(divEle, e, move);
+                break; // 头部移动
+            case direction[0] :
+                new addMoveContentTop(divEle, e, direction[0]);
+                break; // 上拉伸
+            case direction[1] :
+                new addMoveContentRightTop(divEle, e, direction[1]);
+                break; // 右上拉伸
+            case direction[2] :
+                new addMoveContentRight(divEle, e, direction[2]);
+                break; // 右拉伸
+            case direction[3] :
+                new addMoveContentRightButtom(divEle, e, direction[3]);
+                break; // 右下拉伸
+            case direction[4] :
+                new addMoveContentButtom(divEle, e, direction[4]);
+                break; // 下拉伸
+            case direction[5] :
+                new addMoveContentLeftButtom(divEle, e, direction[5]);
+                break; // 左下拉伸
+            case direction[6] :
+                new addMoveContentLeft(divEle, e, direction[6]);
+                break; // 左上拉伸
+            case direction[7] :
+                new addMoveContentLeftTop(divEle, e, direction[7]);
+                break; // 左上拉伸
+            default :
+                new addMoveContentMove(divEle, e, move);
+                break;
+        }
+    }
+
+    function addMoveContentMove(divEle, e, thisEle) { // 移动
+        addMoveContentSuper.apply(this, arguments);
+        var top = this.divTop + this.y;
+        var left = this.divLeft + this.x;
+        this.divStyle.top = top + "px";
+        this.divStyle.left = left + "px";
+    }
+
+    function addMoveContentTop(divEle, e, thisEle) { // 向上拉伸
+        addMoveContentSuper.apply(this, arguments);
+        var top = this.divTop;
+        var height = this.divHeight + (-this.y);
+        if (height < this.min)
+            height = this.min;
+        else
+            top = this.divTop + this.y;
+        this.divStyle.top = top + "px";
+        this.divStyle.height = height + "px";
+        this.textStyle.height = (height - this.hreadHeight) + "px";
+    }
+
+    function addMoveContentRightTop(divEle, e, thisEle) { // 右上拉伸
+        addMoveContentSuper.apply(this, arguments);
+        var top = this.divTop;
+        var width = this.divWidth + this.x;
+        var height = this.divHeight + (-this.y);
+        if (height < this.min)
+            height = this.min;
+        if (width < this.min)
+            width = this.min;
+        else
+            top = this.divTop + this.y;
+        this.divStyle.top = top + "px";
+        this.divStyle.width = width + "px";
+        this.divStyle.height = height + "px";
+        this.textStyle.height = (height - this.hreadHeight) + "px";
+    }
+
+    function addMoveContentRight(divEle, e, thisEle) {  // 右侧拉伸
+        addMoveContentSuper.apply(this, arguments);
+        var width = this.divWidth + this.x;
+        if (width < this.min)
+            width = this.min;
+        this.divStyle.width = width + "px";
+    }
+
+    function addMoveContentRightButtom(divEle, e, thisEle) { // 右下拉伸
+        addMoveContentSuper.apply(this, arguments);
+        var width = this.divWidth + this.x;
+        var height = this.divHeight + this.y;
+        if (height < this.min)
+            height = this.min;
+        if (width < this.min)
+            width = this.min;
+        this.divStyle.width = width + "px";
+        this.divStyle.height = height + "px";
+        this.textStyle.height = (height - this.hreadHeight) + "px";
+
+
+    }
+
+    function addMoveContentButtom(divEle, e, thisEle) { // 向下拉伸
+        addMoveContentSuper.apply(this, arguments);
+        var height = this.divHeight + this.y;
+        if (height < this.min)
+            height = this.min;
+        this.textStyle.height = (height - this.hreadHeight) + "px";
+        this.divStyle.height = height + "px";
+    }
+
+    function addMoveContentLeftButtom(divEle, e, thisEle) { // 左下拉伸
+        addMoveContentSuper.apply(this, arguments);
+        var left = this.divLeft;
+        var width = this.divWidth + (-this.x);
+        var height = this.divHeight + this.y;
+        if (height < this.min)
+            height = this.min;
+        if (width < this.min)
+            width = this.min;
+        else
+            left = this.divLeft + this.x;
+        this.divStyle.width = width + "px";
+        this.divStyle.height = height + "px";
+        this.divStyle.left = left + "px";
+        this.textStyle.height = (height - this.hreadHeight) + "px";
+    }
+
+    function addMoveContentLeft(divEle, e, thisEle) { // 向左拉伸
+        addMoveContentSuper.apply(this, arguments);
+        var left = this.divLeft;
+        var width = this.divWidth + (-this.x);
+        if (width < this.min)
+            width = this.min;
+        else
+            left = this.divLeft + this.x;
+        this.divStyle.left = left + "px";
+        this.divStyle.width = width + "px";
+    }
+
+    function addMoveContentLeftTop(divEle, e, thisEle) { // 左上拉伸
+        addMoveContentSuper.apply(this, arguments);
+        var top = this.divTop;
+        var left = this.divLeft;
+        var width = this.divWidth + (-this.x);
+        var height = this.divHeight + (-this.y);
+        if (height < this.min)
+            height = this.min;
+        else
+            top = this.divTop + this.y;
+        if (width < this.min)
+            width = this.min;
+        else
+            left = this.divLeft + this.x;
+        this.divStyle.top = top + "px";
+        this.divStyle.left = left + "px";
+        this.divStyle.width = width + "px";
+        this.divStyle.height = height + "px";
+        this.textStyle.height = (height - this.hreadHeight) + "px";
+    }
+</script>

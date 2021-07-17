@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>99BI-数据处理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel='stylesheet' type='text/css'/>
+    <!-- Custom CSS -->
+    <link href="../static/css/style.css" rel='stylesheet' type='text/css'/>
+    <link rel="stylesheet" href="../static/css/morris.css" type="text/css"/>
+    <!-- Graph CSS -->
+    <link href="../static/css/font-awesome.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="../static/js/jquery-2.1.4.min.js"></script>
+    <!-- //jQuery -->
+    <link href='//fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet'
+          type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <!-- lined-icons -->
+    <link rel="stylesheet" href="../static/css/icon-font.min.css" type='text/css'/>
+    <!-- //lined-icons -->
+
+    <!-- js -->
+    <script type="text/javascript" src="../static/js/show_js.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/show_css.css">
+</head>
+
+</head>
+<body onload="init();">
+<form id="form1">
+    <iframe id="fraSubmit" name="fraSubmit" style="display:none;" scrolling="yes" noresize src="about:blank"></iframe>
+    <div class="page-container">
+        <!--/content-inner-->
+        <div class="left-content">
+            <div class="mother-grid-inner">
+                <!--header start here-->
+                <!--heder end here-->
+                <ol class="breadcrumb">
+                <div style="display: inline-block;border: 1px solid #eee7e7;">
+                        <li class="breadcrumb-item">
+                            <a style="color: #000000" href="{{ url_for('upload.index') }}" ><h4 style="margin-left: 10px;margin-right: 10px;" id="forms-inline">文件上传</h4></a>
+                        </li>
+                    </div>
+                <div style="display: inline-block;border: 1px solid #eee7e7;">
+                    <li class="breadcrumb-item"><a style="color: #008DE7;" ><h4 style="margin-left: 10px;margin-right: 10px;" id="forms-inline">数据操作</h4></a>
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <ul class=flashes>
+                                    <li style="color:red;font-size:20px;">{{ messages[0] }}</li>
+                                </ul>
+                            {% endif %}
+                        {% endwith %}
+                    </li>
+                </div>
+                    <div style="display: inline-block;border: 1px solid #eee7e7;">
+                        <li class="breadcrumb-item"><a style="color: #000000" href="{{ url_for('show.show_p') }}"><h4 style="margin-left: 10px;margin-right: 10px;" id="forms-inline">可视化操作</h4></a>
+                </li>
+                    </div>
+                    <div style="display: inline-block;border: 1px solid #eee7e7;">
+                        <li class="breadcrumb-item">
+                            <a style="color: #000000;" href="{{ url_for('ybp.ybp_c') }}"><h4 style="margin-left: 10px;margin-right: 10px;" id="forms-inline">仪表盘</h4></a>
+                        </li>
+                    </div>
+                <div style="display: inline-block;border: 1px solid #eee7e7;">
+                    <li class="breadcrumb-item">
+                        <a style="color: #000000" href="{{ url_for('log.oper_log') }}"><h4 style="margin-left: 10px;margin-right: 10px;" id="forms-inline">
+                            操作日志</h4></a>
+                    </li>
+                </div>
+
+                </ol>
+                <!--grid-->
+                <div class="grid-form">
+                    <div class="grid-form1">
+                        <label for="exampleInputEmail2">数据源选择操作</label>
+                        <form class="form-inline"></form>
+                        <div class="form-group">
+                            <div id="select_tables">
+                                <label>选择数据源
+                                    <select id="select_table" name="select_table" method="post"
+                                            class="select_but_class">
+                                        {#                                            <option selected="selected">--请选择表名--</option>#}
+                                        {% for i in file_names %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                                <div>
+                                    <button id="select_but_class_where" onclick="select_table_add()" type="button">
+                                        +
+                                    </button>
+                                </div>
+                                <div>
+                                    <button id="select_but_class_where" onclick="select_table_sub()" type="button">
+                                        -
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-default" name="tj">提交数据源</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-form">
+                    <div class="grid-form1">
+                        <label for="exampleInputEmail2">字段选择操作</label>
+                        <form class="form-inline"></form>
+                        <label>
+                            <div>选择字段</div>
+                            <div id="quedin_input"></div>
+                            <button id="field_add_but" class="select_but_class_add"
+                                    onclick="show_group_by_select(id)"
+                                    type="button">+
+                            </button>
+
+                            <select class="select_but_class_add" id="group_by_select" name="group_by_select"
+                                    method="post"
+                                    class="">
+                                <option selected="selected">请选择聚合函数</option>
+                                {% for i in count_oper %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <select id="select_but" name="select_but" method="post" class="select_but_class">
+                                <option selected="selected">*</option>
+                                <option selected="selected">无</option>
+                                {% for i in data %}
+                                    {% for j in i %}
+                                        <option value="{{ j }}">{{ j }}</option>
+                                    {% endfor %}
+                                {% endfor %}
+                            </select>
+                            <button style="display:inline-block" id="as_name_copy_but" class="select_but_class_add"
+                                    onclick="show_input_as_name(id)"
+                                    type="button">as
+                            </button>
+                            <input id="as_name_copy_buts" class="select_but_class_add" name="as_name_copy_buts"
+                                   style="display:none" type="text" value="请输入别名">
+                            <div id="div_11" class=""></div>
+                        </label>
+                    <div id="but3">
+
+                            <button id="but_where2" class="select_but_class_add" onclick="tianjia()" type="button">+
+                            </button>
+                            <button id="but_where3" class="select_but_class_add" onclick="jianchu()" type="button">-
+                            </button>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!--条件选择操作-->
+                <div class="grid-form">
+                    <div class="grid-form1">
+                        <label for="exampleInputEmail2">条件选择操作</label>
+                        <form class="form-inline"></form>
+
+                        <div id="parentDiv1">
+                            <div><label>条件是</label></div>
+                            <select id="condition_0" name="condition_0" class="select_but_class_add">
+                                <option value="">选择连接符</option>
+                                <option value="or">or</option>
+                                <option value="and">and</option>
+                            </select>
+                            <select id="condition_1" name="condition_1" class="select_but_class_add">
+                                <option selected="selected">无条件</option>
+                                {% for i in data %}
+                                    {% for j in i %}
+                                        <option value="{{ j }}">{{ j }}</option>
+                                    {% endfor %}
+                                {% endfor %}
+                            </select>
+                            <select id="condition_2" name="condition_2" class="select_but_class_add">
+                                <option selected="selected">无条件</option>
+                                {% for i in operator %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                            <input id="condition_3" class="select_but_class_add" name="condition_3" type="text"
+                                   value="无条件">
+                            <div id="div_22"></div>
+                        </div>
+                        <div id="but2">
+                            <button id="but_where2" class="select_but_class_add" onclick="tianjia1()" type="button">+
+                            </button>
+                            <button id="but_where3" class="select_but_class_add" onclick="jianchu1()" type="button">-
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            <!--聚合-->
+                <div id="group_name" class="grid-form">
+                    <div class="grid-form1">
+                        <label for="exampleInputEmail2">字段聚合操作</label>
+                        <form class="form-inline"></form>
+                        <div>
+                            <lable>
+                                对:
+                                <select id="group_by_1" name="group_by_1" class="select_but_class_add">
+                                    <option selected="selected">请选择字段</option>
+                                    {% for i in data %}
+                                        {% for j in i %}
+                                            <option value="{{ j }}">{{ j }}</option>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </select>字段进行聚合操作
+                            </lable>
+                        </div>
+                    </div>
+                </div>
+
+                            <!--表的连接操作-->
+                <div id="table_join" class="grid-form">
+                    <div class="grid-form1">
+                        <label for="exampleInputEmail2">表的连接操作</label>
+                        <form class="form-inline"></form>
+                        <div id="table_joins">
+
+                            <div id="dui" style="display: inline-block">对</div>
+
+                            <select id="table_join_1" name="table_join_1" class="select_but_class_add">
+                                <option selected="selected">None</option>
+                                {% for i in file_names %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <div id="tableis" style="display: inline-block">表的</div>
+
+                            <select id="table_join_2" name="table_join_2" class="select_but_class_add">
+                                <option selected="selected">None</option>
+                                {% for i in columns_name_all %}
+                                    {% for j in i %}
+                                        <option value="{{ j }}">{{ j }}</option>
+                                    {% endfor %}
+                                {% endfor %}
+                            </select>
+
+                            <div id="and_data" style="display: inline-block">字段 和</div>
+
+                            <select id="table_join_3" name="table_join_3" class="select_but_class_add">
+                                <option selected="selected">None</option>
+                                {% for i in file_names %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+
+                            </select>
+                            <div id="table_ands" style="display: inline-block">表的</div>
+
+                            <select id="table_join_4" name="table_join_4" class="select_but_class_add">
+                                <option selected="selected">None</option>
+                                {% for i in columns_name_all %}
+                                    {% for j in i %}
+                                        <option value="{{ j }}">{{ j }}</option>
+                                    {% endfor %}
+                                {% endfor %}
+                            </select>
+                            </select>
+                            <div id="ziduan_join" style="display: inline-block">字段进行联合</div>
+                            <div id="lianhe" style="display:block"></div>
+                            <div style="width: 1px"></div>
+                        </div>
+                        <div style="width: 1px"></div>
+                        <div id="buts">
+                            <button id="tianjias_1" class="select_but_class_add" onclick="tianjias()" type="button">+
+                            </button>
+                            <button id="jianchus_2" class="select_but_class_add" onclick="jianchus()" type="button">-
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+            <!--排序-->
+                 <div id="data_sort_html" style="display: none" class="grid-form">
+                    <div class="grid-form1">
+                        <label for="exampleInputEmail2">字段排序</label>
+                        <form class="form-inline"></form>
+                        <div class="form-group">
+                            对
+                            <select id="data_sort_html" name="data_sort_html" class="select_but_class_add">
+                                <option selected="selected">无条件</option>
+                                {% for i in data %}
+                                    {% for j in i %}
+                                        <option value="{{ j }}">{{ j }}</option>
+                                    {% endfor %}
+                                {% endfor %}
+                            </select>
+                            进行
+                            <select id="data_sort_html1" name="data_sort_html1" class="select_but_class_add">
+
+                                <option value="正序">正序</option>
+                                <option value="倒序">倒序</option>
+                            </select>
+                            排序
+                           </div>
+                    </div>
+                </div>
+            <!--截取-->
+                 <div id="data_slice_html" style="display: none" class="grid-form">
+                    <div class="grid-form1">
+                        <label for="exampleInputEmail2">字段截取</label>
+                        <form class="form-inline"></form>
+                        <div class="form-group">
+                            截取前
+                            <input id="data_slice_data-div1" name="data_slice_data">
+                            行
+                           </div>
+                    </div>
+                </div>
+
+            <!--自然连接-->
+            <div id="N_join" style="display: none" class="grid-form">
+                    <div class="grid-form1">
+                        <label for="exampleInputEmail2">表自然连接</label>
+                        <form class="form-inline"></form>
+                        <div class="form-group">
+                            <div style="display: inline-block">连接</div>
+                            <div style="display: inline-block">
+                                 <select id="tables1_data" name="tables1_data" method="post"
+                                            class="select_but_class">
+                                 <option selected="selected">None</option>
+                                        {% for i in file_names %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                            </div>
+                            <div id="js_join" style="display: inline-block">和</div>
+
+                                <select id="tables2_datas" name="tables2_datas" method="post" style="display: inline-block;margin-left: 4px;
+    margin-right: 4px;"
+                                            class="select_but_class">
+                                <option selected="selected">None</option>
+                                        {% for i in file_names %}
+                                            <option value="{{ i }}">{{ i }}</option>
+                                        {% endfor %}
+                                    </select>
+                        </div>
+                         <div id="buts">
+                            <button id="table_join_add_1" class="select_but_class_add" onclick="table_join_add()" type="button">+
+                            </button>
+                            <button id="table_join_chu_1" class="select_but_class_add" onclick="table_join_chu()" type="button">-
+                            </button>
+
+
+                           </div>
+                    </div>
+                </div>
+
+
+                <div class="grid-form">
+                    <div class="grid-form1">
+                        <label for="exampleInputEmail2">部分数据展示（10行100列）</label>
+                        <div class="form-group">
+                            <div id="data_show" class="data_show">
+                                {{ df|safe }}
+                            </div>
+                            <div style="height: 30px">
+
+                                <button type="submit" class="btn btn-default" style="float: right">提交</button>
+                                <input style="float: right" id="table_save" class="select_but_class_add_save" name="table_save" type="text"
+                                   value="保存名称(请输入英文名)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="zhezhao" id='zhezhao' style="display: none;">
+                    <div class="lightbox"></div>
+                    <div class="tankuang">
+                        <div id="header">
+                            <div id="select_data" class="select_data">
+                                <div>
+                                    <button style="display: inline-block" id="1111111" type="button"
+                                            class="btn_text btn_YBP_data_color"
+                                    onclick="document.all.result_data.style.display=(document.all.result_data.style.display =='none')?'':'none'">数值字段
+                                    </button>
+
+                            <div id="result_data" style="display:none" onscroll="aa()">
+                                <table id="t_data">
+                                    <col width="60">
+                                    <col width="50">
+                                    <col width="40">
+                                    <col width="50">
+                                    <col width="70">
+                                    <col width="50">
+                                    <col width="50">
+                                    <tbody>
+                                    {% for i in c_zb %}
+                                        <tr>
+                                            <td id="{{ "`"+i+"`"|safe }}" onclick="inpit_text(id)"
+                                                style="float:right;" >{{ i|safe }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                                </div>
+                                <div>
+                                    <button style="display: inline-block" id="222222" type="button"
+                                            class="btn_text btn_YBP_data_color"
+                                    onclick="document.all.result_data2.style.display=(document.all.result_data2.style.display =='none')?'':'none'">文本字段
+                                    </button>
+                                </div>
+                                 <div id="result_data2" style="display:none" onscroll="aa()">
+                                <table id="t_data">
+                                    <col width="60">
+                                    <col width="50">
+                                    <col width="40">
+                                    <col width="50">
+                                    <col width="70">
+                                    <col width="50">
+                                    <col width="50">
+                                    <tbody>
+                                    {% for i in c_wd %}
+                                        <tr>
+                                            <td id="{{ "`"+i+"`"|safe }}" onclick="inpit_text(id)"
+                                                style="float:right;" >{{ i|safe }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+                                <div>
+                                    <button style="display: inline-block" id="333333" type="button"
+                                            class="btn_text btn_YBP_data_color"
+                                    onclick="document.all.result_data3.style.display=(document.all.result_data3.style.display =='none')?'':'none'">函数
+                                    </button>
+                                </div>
+                              <div id="result_data3" style="display:none" onscroll="aa()">
+                                <table id="t_data">
+                                    <col width="60">
+                                    <col width="50">
+                                    <col width="40">
+                                    <col width="50">
+                                    <col width="70">
+                                    <col width="50">
+                                    <col width="50">
+                                    <tbody>
+                                    {% for i in c_oper %}
+                                        <tr>
+                                            <td onmouseover="mOver(id)" onmouseout="mOut(id)" id="{{ i|safe }}" onclick="inpit_text(id)"
+                                                style="float:right;" >{{ i|safe }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            </div>
+
+                            <div id="def_data" class="def_data">
+                                <div>
+                                    <button style="display: inline-block" onclick="JIA_def()" id="JIA" type="button"
+                                            class="btn1 btn_YBP_data_color">+
+                                    </button>
+                                </div>
+                                <div>
+                                    <button style="display: inline-block" id="JIAN" onclick="JIAN_def()" type="button"
+                                            class="btn1 btn_YBP_data_color">-
+                                    </button>
+                                </div>
+                                <div>
+                                    <button style="display: inline-block" id="CHEN" onclick="CHEN_def()" type="button"
+                                            class="btn1 btn_YBP_data_color">*
+                                    </button>
+                                </div>
+                                <div>
+                                    <button style="display: inline-block" id="CHU" onclick="CHU_def()" type="button"
+                                            class="btn1 btn_YBP_data_color">/
+                                    </button>
+
+                                </div>
+                                <div>
+                                    <button style="display: inline-block" id="ZUO" onclick="ZUO_def()" type="button"
+                                            class="btn1 btn_YBP_data_color">(
+                                    </button>
+
+                                </div>
+                                <div>
+                                    <button style="display: inline-block" id="YOU" onclick="YOU_def()" type="button"
+                                            class="btn1 btn_YBP_data_color">)
+                                    </button>
+
+                                </div>
+                                <div>
+                                    <button style="display: inline-block" id="as_div" onclick="as_div_def()" type="button"
+                                            class="btn1 btn_YBP_data_color">as
+                                    </button>
+
+                                </div>
+                                <div>
+                                    <button style="display: inline-block" id="qi_ziduan" onclick="qi_ziduan_def()" type="button"
+                                            class="btn5 btn_YBP_data_color">启用自定义字段
+                                    </button>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <div id="input_shows" class="input_shows">
+
+
+                                <textarea class="comments" id="textarea_data" name="textarea_data"
+                                          style="height:expression((this.scrollHeight>150)?'150px':(this.scrollHeight+5)+'px');overflow:auto;"></textarea>
+
+
+
+                                <div id="textarea_data_div">函数功能:</div>
+
+                            </div>
+                            <label>
+                                <div id="butts_div" class="butts_div">
+
+                                    <div class="btn2 btn_YBP_data_color" style="display: inline-block">
+                                        <button class="btn3 btn_YBP_data_color but_1" id="222" type="button" onclick="quedin_but()">确认</button>
+                                    </div>
+                                    <div class="btn2 btn_YBP_data_color" style="display: inline-block">
+                                        <button class="btn3 btn_YBP_data_color but_1" id="111" type="button" onclick="hidder()">退出</button>
+                                    </div>
+
+                                </div>
+                            </label>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="grid-form">
+                <button type="submit" class="btn btn-default" name="submitbutton">Submit</button>
+            </div>
+
+
+        </div>
+        <div class="sidebar-menu">
+            <div style="border-top:5px ridge rgba(255, 255, 255, 0.15)"></div>
+            <ul id="menu">
+                <li>
+                    <div>
+                        <a href="#table_join" onclick="table_block()">多表关联<span
+                    class="fa fa-angle-right" style="float: right"></span></a></div>
+                </li>
+
+                <li>
+                    <div onclick="dianwo()">
+                        <a>自定义字段<span
+                                class="fa fa-angle-right" style="float: right"></span></a></div>
+                </li>
+
+                <li>
+                    <div onclick="data_sort()">
+                        <a href="#data_sort_html">字段排序<span
+                                class="fa fa-angle-right" style="float: right"></span></a></div>
+                </li>
+                <li>
+                    <div onclick="data_slice()">
+                        <a href="#data_slice_html">字段截取<span
+                                class="fa fa-angle-right" style="float: right"></span></a></div>
+                </li>
+                <li>
+                    <div onclick="nature_join_def()">
+                        <a href="#N_join">自然连接<span
+                                class="fa fa-angle-right" style="float: right"></span></a></div>
+                </li>
+
+
+            </ul>
+        </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>99BI-数据可视化</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!-- Bootstrap Core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel='stylesheet' type='text/css'/>
+    <!-- Custom CSS -->
+    <link href="../static/css/style2.css" rel='stylesheet' type='text/css'/>
+    <link rel="stylesheet" href="../static/css/morris.css" type="text/css"/>
+    <!-- Graph CSS -->
+    <link href="../static/css/font-awesome.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="../static/js/jquery-2.1.4.min.js"></script>
+    <!-- //jQuery -->
+    <link href='//fonts.googleapis.com/css?family=Roboto:700,500,300,100italic,100,400' rel='stylesheet'
+          type='text/css'/>
+    <link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <!-- lined-icons -->
+    <link rel="stylesheet" href="../static/css/icon-font.min.css" type='text/css'/>
+    <!-- //lined-icons -->
+    <script type="text/javascript" src="http://www.daixiaorui.com/Public/js/jquery.min.js"></script>
+    <!-- js -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../static/js/Visual.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/Visual.css">
+    {#    #echarts#}
+    <script type="text/javascript" src="{{ url_for('static',filename='js/echarts.js') }}"></script>
+</head>
+<body onload="load();">
+<form id="form1" onsubmit="return subit_onclick()">
+    <div class="page-container">
+        <!--左边布局-->
+        <div class="left-content">
+            <!--网页布局-->
+            <div class="mother-grid-inner" id="mother-grid-inner" style="display: block">
+                <!--头部图标类型的按钮-->
+                <ol class="breadcrumb" id="breadcrumb" style="display: block">
+                    <ol class="breadcrumb">
+
+                        <div style="float: right;border: 1px solid #eee7e7;">
+                            <li class="breadcrumb-item">
+                                <a style="color: #000000" href="{{ url_for('log.oper_log') }}"><h4
+                                        style="margin-left: 10px;margin-right: 10px;" id="forms-inline">
+                                    操作日志</h4></a>
+                            </li>
+                        </div>
+                        <div style="float: right;border: 1px solid #ece2e2;margin-left: 5px;margin-right: 5px;">
+                            <li class="breadcrumb-item">
+                                <a style="color: #000000" href="{{ url_for('ybp.ybp_c') }}"><h4
+                                        style="margin-left: 10px;margin-right: 10px;" id="forms-inline">仪表盘</h4></a>
+                            </li>
+                        </div>
+                        <div style="float: right;border: 1px solid #ece2e2;margin-left: 5px;margin-right: 5px;">
+                            <li class="breadcrumb-item"><a style="color: #008DE7;"><h4
+                                    style="margin-left: 10px;margin-right: 10px;" id="forms-inline">可视化操作</h4></a>
+                            </li>
+                        </div>
+                        <div style="float: right;border: 1px solid #ece2e2;margin-left: 5px;margin-right: 5px;">
+                            <li class="breadcrumb-item"><a href="{{ url_for('handle.data_handle') }}"
+                                                           style="color: #000000;"><h4
+                                    style="margin-left: 10px;margin-right: 10px;" id="forms-inline">数据操作</h4></a>
+                            </li>
+                        </div>
+                        <div style="float: right;border: 1px solid #ece2e2;margin-left: 5px;margin-right: 5px;">
+                            <li class="breadcrumb-item">
+                                <a style="color: #000000" href="{{ url_for('upload.index') }}"><h4
+                                        style="margin-left: 10px;margin-right: 10px;" id="forms-inline">文件上传</h4></a>
+                            </li>
+                        </div>
+                    </ol>
+
+
+                    <label for="exampleInputEmail2">图表类型</label>
+                    <div></div>
+                    <div id="maxBox">
+                        <img src="../static/image/折线图.png" id="dx_BS1" class="dx_BS button button1"
+                             onclick="chooseType(this)">
+
+                        <img src="../static/image/柱状图.png" id="dx_BS2" class="dx_BS button button1"
+                             onclick="chooseType(this)">
+
+                        <img src="../static/image/饼图.png" id="dx_BS3" class="dx_BS button button1"
+                             onclick="chooseType(this)">
+
+                        <img src="../static/image/散点图.png" id="dx_BS4" class="dx_BS button button1"
+                             onclick="chooseType(this)">
+
+                        <img src="../static/image/明细表.png" id="dx_BS5" class="dx_BS button button1"
+                             onclick="chooseType(this)">
+
+                        <img src="../static/image/面积折线.png" id="dx_BS6" class="dx_BS button button1"
+                             onclick="chooseType(this)">
+
+                        <img src="../static/image/玫瑰饼图.png" id="dx_BS7" class="dx_BS button button1"
+                             onclick="chooseType(this)">
+
+                    </div>
+                </ol>
+
+                <!--粗细-->
+                <div style="display:none" id="degree_finish" class="grid-form2">
+                    <div class="grid-form1">
+                        <div id="" style="display: block">
+                            <div class="divnamex">粗细:</div>
+                            <input id="degree_finish_data" name="degree_finish_data" value="2">
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--柔软度-->
+                <div style="display:none" id="compliance_set" class="grid-form2">
+                    <div class="grid-form1">
+
+                        <div id="compliance_data_input" style="display: block">
+                            <div class="divnamex">弧度(0.1-1):</div>
+                            <input id="compliance_value" name="compliance_value" value="0.1">
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--title设置-->
+                <div style="display:block;margin-top: -7px;" id="titil-from" class="grid-form2">
+                    <div class="grid-form1">
+
+                        <div id="title_input" style="display: block">
+                            <div class="divnamex">titile:</div>
+                            <input id="title-div1" name="title_name">
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--背景颜色设置-->
+                <div style="display:none" id="data-color" class="grid-form2">
+                    <div class="grid-form1">
+
+                        <div id="title_input" style="display: block">
+                            <div class="divnamex">背景颜色:</div>
+                            <input id="input_color" name="input_color" type="color" value="#ffffff">
+
+                        </div>
+
+                    </div>
+                </div>
+                <!--xy轴数据放置-->
+                <div style="display:block;margin-top: -45px;" id="grid-form-dx_BS1" class="grid-form">
+                    <div class="grid-form1">
+                        <form class="form-inline"></form>
+                        <div id="data_input" style="display: block" class="form-group">
+                            <div>
+                                <label>
+                                    <input style="display:none" name="BOX_data" id="BOX_data" value="1">
+                                    <div id="x_zhou" class="divnamex">X轴</div>
+                                    <div id="div1" name="grid-form-dx_BSX" ondrop="drop(event)"
+                                         ondragover="allowDrop(event)">
+                                    </div>
+                                    <input style="display:none" name="BSX1-input" id="BSX1-input" value="">
+                                </label>
+                            </div>
+                            <div id="y_data_zhou" style="display: block">
+                                <label>
+                                    <div id="y_zhou" class="divnamex">Y轴</div>
+                                    <div id="div2" name="grid-form-dx_BSY" ondrop="drop_div2(event)"
+                                         ondragover="allowDrop(event)">
+                                    </div>
+                                    <input style="display:none" name="BSY1input" id="BSY1input" value="">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--饼图数据的设置-->
+                <div style="display:none;margin-top: -45px;" id="grid-form-dx_BS3" class="grid-form">
+                    <div class="grid-form1">
+                        <div class="form-group">
+                            <div>
+                                <label>
+                                    <div class="divnamex">名称</div>
+                                    <div id="div1" name="grid-form-dx_BS3D" ondrop="drop(event)"
+                                         ondragover="allowDrop(event)">
+                                    </div>
+                                    <input style="display:none" id="BSX3-input" value="">
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    <div class="divnamex">数据</div>
+                                    <div id="div2" name="grid-form-dx_BS2M" ondrop="drop_div2(event)"
+                                         ondragover="allowDrop(event)">
+                                    </div>
+                                    <input style="display:none" id="BSY3input" value="">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--空白格挤压显示-->
+                <div id="Extrusion_shape" class="grid-form" style="display: block"></div>
+                <!--按钮设置-->
+                <ol id="butleixin" class="butleixin">
+                    <label for="exampleInputEmail2">数据操作</label>
+                    <div></div>
+                    <div id="maxBox">
+                        <input style="display: none" id="XYtransform" name="XYtransform" value="0">
+                        <button onclick="data_places()" id="data_place" type="button" value="test"
+                                class="btn btn-default" name="submitbutton">数据设置
+                        </button>
+                        <button id="YBP_data_color" onclick="YBPcolorDEF()" style="" type="button" value="test"
+                                class="btn btn_YBP_data_color"
+                                name="YBPdelect">背景颜色设置
+                        </button>
+
+                        <button id="The_Thickness" onclick="The_Thickness_def()" style="" type="button" value="test"
+                                class="btn btn_YBP_data_color"
+                                name="The_Thickness">粗细设置
+                        </button>
+
+                        <button id="The_emo" onclick="emo_set_def()" style="" type="button" value="test"
+                                class="btn btn_YBP_data_color"
+                                name="The_emo">弧度设置
+                        </button>
+
+                        <button style="display: inline-block" id="XYTFNAME" onclick="XYTF()" type="button" value="test"
+                                class="btn btn-default"
+                                name="submitbutton">XY轴转换:关闭
+                        </button>
+
+                        <input style="display: none" id="Area_value" name="Area_value" value="0">
+
+
+                        <button style="float: right" type="submit" value="test" class="btn btn-default"
+                                name="submitbutton">数据提交
+                        </button>
+                    </div>
+                </ol>
+
+                <!--可视化显示-->
+                <ol id="breadcrumbs" class="breadcrumb">
+                    <label for="exampleInputEmail2">可视化显示</label>
+                    {% if df_tb|length==166 %}
+                    {% else %}
+                        <div id="data_show" class="data_show">
+                            {{ df_tb|safe }}
+                        </div>
+                    {% endif %}
+                    <div id="container" draggable="true" ondragstart="drag(event)"
+                         style="height: 500px;display: block"></div>
+                    <script id="script_data" type="text/javascript">
+                        var dom = document.getElementById("container");
+                        var myChart = echarts.init(dom);
+                        var app = {};
+                        var option;
+                        {#折线图#}
+                        {% if line_x|length>0 %}
+                            option = {
+                                backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                                    offset: 0,
+                                    color: '{{ back_color }}'
+                                }, {
+                                    offset: 1,
+                                    color: '#cdd0d5'
+                                }]),
+                                title: {
+                                    text: '{{ title|safe }}',
+                                    x: 'center'
+                                },
+                                legend: {
+                                    x: 'left'
+                                },
+                                {% if XY_T=="0" %}
+                                    xAxis: {
+                                        type: 'category',
+                                        data: {{ line_x|safe }}
+                                    },
+                                    yAxis: {
+                                        type: 'value'
+                                    },
+                                {% elif XY_T=="1" %}
+                                    yAxis: {
+                                        type: 'category',
+                                        data: {{ line_x|safe }}
+                                    },
+                                    xAxis: {
+                                        type: 'value'
+                                    },
+                                {% endif %}
+                                toolbox: {
+                                    show: true,
+                                    feature: {
+                                        dataZoom: {
+                                            yAxisIndex: 'none'
+                                        },
+                                        dataView: {readOnly: false},
+
+                                        restore: {},
+                                        saveAsImage: {}
+                                    }
+                                },
+                                series: [
+                                    {% for i in line_y %}
+                                        {
+                                            name: "数据{{ loop.index }}",
+                                            lineStyle: {
+                                                width:{{ degree }}
+                                            },
+                                            data: {{ i }},
+                                            type: 'line',
+                                            smooth:{{ radian }},
+                                            {% if line_area!="0" %}
+                                                areaStyle: {},
+                                            {% else %}
+                                            {% endif %}
+
+                                        },
+                                    {% endfor %}
+
+                                ]
+                            };
+                        {% endif %}
+
+
+
+                        {#-----------------------------------柱状图--------------------------------------------------#}
+                        {% if bar_x|length>0 %}
+                            option = {
+                                backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                                    offset: 0,
+                                    color: '{{ back_color }}'
+                                }, {
+                                    offset: 1,
+                                    color: '#cdd0d5'
+                                }]),
+                                legend: {
+                                    x: 'left'
+                                },
+                                title: {
+                                    text: '{{ title|safe }}',
+                                    x: 'center'
+                                },
+                                {% if XY_T=="0" %}
+                                    xAxis: {
+                                        type: 'category',
+                                        data: {{ bar_x|safe }}
+                                    },
+                                    yAxis: {
+                                        type: 'value'
+                                    },
+                                {% elif XY_T=="1" %}
+                                    yAxis: {
+                                        type: 'category',
+                                        data: {{ bar_x|safe }}
+                                    },
+                                    xAxis: {
+                                        type: 'value'
+                                    },
+                                {% endif %}
+                                toolbox: {
+                                    show: true,
+                                    feature: {
+                                        dataZoom: {
+                                            yAxisIndex: 'none'
+                                        },
+                                        dataView: {readOnly: false},
+
+                                        restore: {},
+                                        saveAsImage: {}
+                                    }
+                                },
+                                series: [
+                                    {% for i in bar_y %}
+                                        {
+                                            barWidth: {{ degree }},
+                                            name: "数据{{ loop.index }}",
+                                            data: {{ i }},
+                                            type: 'bar'
+                                        },
+                                    {% endfor %}
+
+                                ]
+                            };
+                        {% endif %}
+
+
+
+                        {#------------------------------------饼图----------------------------------------------#}
+                        {% if pie_x|length>0 %}
+                            var pie_data_x ={{ pie_x|safe }}
+                            var pie_data_y ={{ pie_y|safe }}
+                            var data = []
+                            for (var i in pie_data_x) {
+                                data.push({
+                                    name: pie_data_x[i],
+                                    value: pie_data_y[i]
+                                })
+                            }
+                            option = {
+                                backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                                    offset: 0,
+                                    color: '{{ back_color }}'
+                                }, {
+                                    offset: 1,
+                                    color: '#cdd0d5'
+                                }]),
+                                legend: {
+                                    x: 'left'
+                                },
+                                title: {
+                                    text: '{{ title|safe }}',
+                                    x: 'center'
+                                },
+                                legend: {
+                                    orient: 'vertical',
+                                    left: 'left',
+                                },
+                                series: {
+                                    label: {
+                                        formatter: "{b}\n{c}\n{d}%"
+                                    },
+                                    type: 'pie',
+                                    data: data,
+                                    {% if pie_rose=="1" %}
+                                        roseType: "radius"
+                                    {% elif pie_rose=="0" %}
+                                    {% endif %}
+                                }
+                            }
+                        {% endif %}
+
+
+                        {#--------------------------------------散点图-----------------------------------------------#}
+                        {% if p_type=="4" %}
+                            var scatter_x ={{ scatter_x|safe }}
+                            var scatter_y ={{ scatter_y|safe }}
+                            var scatter_data = []
+                            for (var i in scatter_y) {
+                                scatter_data.push([
+                                    scatter_x[i], scatter_y[i]
+                                ])
+                            }
+                            option = {
+                                backgroundColor: new echarts.graphic.RadialGradient(0.3, 0.3, 0.8, [{
+                                    offset: 0,
+                                    color: '{{ back_color }}'
+                                }, {
+                                    offset: 1,
+                                    color: '#cdd0d5'
+                                }]),
+                                title: {
+                                    text: "{{ title|safe }}",
+                                    x: 'center'
+                                },
+                                xAxis: {},
+                                yAxis: {},
+                                series: {
+                                    type: 'scatter',
+                                    data: scatter_data
+                                }
+                            }
+                        {% endif %}
+
+
+                        if (option && typeof option === 'object') {
+                            myChart.setOption(option);
+                        }
+                    </script>
+
+                </ol>
+
+                <!--提交至仪表盘 暂时不用-->
+                <div class="grid-form3" style="display: none">
+                    <button id="ECHARTS_DATA" style="float: right" type="button" onclick="echarts_data()"
+                            class="btn btn-default">提交至仪表盘
+                    </button>
+                </div>
+
+                <!--后面空白格-->
+                <div id="grid-form-pubu" class="grid-form" style="display: block"></div>
+
+                <!--左侧操作栏-->
+                <div class="sidebar-menu" ondrop="deletes(event)" ondragover="allowDrop(event)">
+                    <div style="border-top:5px ridge rgba(255, 255, 255, 0.15)"></div>
+                    <ul id="menu">
+                        <li>
+                            <div id="weidu" style="display: block"
+                                 onclick="document.all.result_data.style.display=(document.all.result_data.style.display =='none')?'':'none'">
+                                <a>维度<span
+                                        class="fa fa-angle-right" style="float: right"></span></a></div>
+                        </li>
+                        <li>
+                            <div class="result_data" id="result_data" style="display:none" onscroll="aa()">
+                                <table id="t_data" class="t_data">
+                                    <col width="60">
+                                    <col width="50">
+                                    <col width="40">
+                                    <col width="50">
+                                    <col width="70">
+                                    <col width="50">
+                                    <col width="50">
+                                    <tbody>
+                                    {% for i in wd %}
+                                        <tr>
+                                            <td id="{{ i|safe }}" draggable="true"
+                                                ondragstart="drag(event)">{{ i|safe }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div id="weidu2" style="display: none"
+                                 onclick="document.all.result_data3.style.display=(document.all.result_data3.style.display =='none')?'':'none'">
+                                <a>维度<span
+                                        class="fa fa-angle-right" style="float: right"></span></a></div>
+                        </li>
+                        <li>
+                            <div class="result_data" id="result_data3" style="display:none" onscroll="aa()">
+                                <table id="t_data" class="t_data">
+                                    <col width="60">
+                                    <col width="50">
+                                    <col width="40">
+                                    <col width="50">
+                                    <col width="70">
+                                    <col width="50">
+                                    <col width="50">
+                                    <tbody>
+                                    {% for i in zb %}
+                                        <tr>
+                                            <td id="{{ i|safe }}" draggable="true"
+                                                ondragstart="drag(event)">{{ i|safe }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div id="zhibiao"
+                                 onclick="document.all.result_data2.style.display=(document.all.result_data2.style.display =='none')?'':'none'">
+                                <a>指标<span
+                                        class="fa fa-angle-right" style="float: right"></span></a></div>
+                        </li>
+                        <li>
+                            <div class="result_data" id="result_data2" style="display:none" onscroll="aa()">
+                                <table id="t_data" class="t_data">
+                                    <col width="60">
+                                    <col width="50">
+                                    <col width="40">
+                                    <col width="50">
+                                    <col width="70">
+                                    <col width="50">
+                                    <col width="50">
+                                    <tbody>
+                                    {% for i in zb %}
+                                        <tr>
+                                            <td id="<div2>{{ i|safe }}" draggable="true"
+                                                ondragstart="drag(event)">{{ i|safe }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </li>
+                    </ul>
+                </div>
+
+                <!--网页布局结束-->
+            </div>
+            <!--左边布局结束-->
+        </div>
+        <!--整体布局结束-->
+    </div>
+</form>
+</body>
+</html>

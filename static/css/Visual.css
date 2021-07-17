@@ -1,0 +1,242 @@
+
+.divbox{
+    height: 400px;
+}
+
+#box {
+    width: 200px;
+    height: 100px;
+    cursor: move;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    background-color: #FFF;
+    border: 1px solid #CCCCCC;
+    -webkit-box-shadow: 10px 10px 25px #ccc;
+    -moz-box-shadow: 10px 10px 25px #ccc;
+    box-shadow: 10px 10px 25px #ccc;
+    background: url('');
+    background-size: 100% 100%;
+
+}
+
+.btn_YBP_data_name{
+    background-color: #ff4a43;
+    border-color: #ff4a43;
+    color: #fff;
+}
+
+.btn_YBP_data_color{
+    background: #fff;
+}
+
+
+#coor {
+    width: 8px;
+    height: 8px;
+    overflow: hidden;
+    cursor: se-resize;
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    opacity: 0.8;
+    background-color: #09C;
+    border: 1px dashed #fff;
+}
+
+
+.data_show{
+    width: 100%;
+    height: 100%;
+}
+.data_show tr th td{
+    text-align: center;
+    background-color: #c0fcc2;
+}
+
+.data_show th{
+    width: auto;
+    text-align: center;
+    background-color: #c0fcc2;
+}
+.data_show td{
+    width: auto;
+    text-align: center;
+    background-color: #a1f3f8;
+}
+
+.data_show{
+    width: 100%;
+    height: 100%;
+}
+.data_show tr th td{
+    text-align: center;
+    background-color: #c0fcc2;
+}
+
+.data_show th{
+    width: auto;
+    text-align: center;
+    background-color: #c0fcc2;
+}
+.data_show td{
+    width: auto;
+    text-align: center;
+    background-color: #a1f3f8;
+}
+.button_title {
+
+    height: 30px;
+    border: 1px solid #f3ecec;
+    padding: 6px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    float: left;
+}
+
+#div1 {
+    width: 500px;
+    height: 30px;
+    padding: 1px;
+    display:inline-block;
+    border: 1px solid #aaaaaa
+}
+#title-div1 {
+    width: 498px;
+    height: 30px;
+    padding: 1px;
+    display:inline-block;
+    border: 1px solid #aaaaaa
+}
+
+.divnamex{
+    padding: 5px 5px;
+    float: left;
+    display:inline-block;
+}
+
+
+.butleixin {
+    margin-bottom: 11px;
+    padding: 2px 15px ! important;
+    background-color: #ffffff ! important;
+}
+
+#div2 {
+    width: 500px;
+    height: 30px;
+    padding: 1px;
+    display:inline-block;
+    border: 1px solid #aaaaaa
+}
+
+.btnCss {
+    background-color: #F6F6F6;
+    color: #000000;
+    border: 1px solid #c78181;
+}
+
+.upBtnCss {
+    position: center;
+    border: 1px solid #c78181;
+    background-color: #FD8D27;
+    color: #ffffff;
+}
+.btn{
+    border: 1px solid #ece2e2;
+}
+
+.button {
+    width: 50px;
+    height: 30px;
+    border: 1px solid #f3ecec;
+    padding: 6px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.button0 {
+    border: 1px solid #ece2e2;
+    background-color: #c0fcc2;
+    color: white;
+}
+
+.button1:hover {
+    border: 1px solid #efe7e7;
+    background-color: #c0fcc2;
+    color: white;
+}
+
+
+#result_head {
+    border: 1px solid #ffffff;
+    width: 450px;
+    height: 50px;
+    left: 100px;
+    overflow: hidden;
+}
+
+#result_items {
+    border: 1px solid #ffffff;
+    width: 100px;
+    height: 300px;
+    position: absolute;
+    top: 50px;
+    left: 0px;
+    overflow: hidden;
+}
+
+.result_data {
+    border: 1px solid #333333;
+    width: 201px;
+    height: 250px;
+    top: 50px;
+    left: 100px;
+    overflow: auto;
+    text-align: center;
+}
+
+
+#delete {
+    border: 0px solid #f00;
+    width: 50px;
+    height: 60px;
+}
+
+/*
+设置表格的宽度，并在下面使用col标签把每列的宽度规定好，
+一般来说不需要规定表格的高度，因为随着
+数据行的增加，高度是增加的。
+但是这里，t_title、t_head都是列名，不会增加，所以就固定了
+*/
+
+.t_data {
+ text-align: center;
+    width: 199px;
+}
+
+table {
+    text-align: center;
+    border-collapse: collapse;
+}
+
+table tr {
+    height: 20px;
+}
+
+table th, td {
+    width: 150px;
+    border: 1px solid #333333;
+}
